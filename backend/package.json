@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@serialport/bindings": "^9.2.9",
+    "@serialport/parser-readline": "^12.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.3",
+    "serialport": "^12.0.0"
+  }
+}
