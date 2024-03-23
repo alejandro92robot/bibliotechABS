@@ -12,6 +12,26 @@ app.listen(port, function () {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* const express = require('express');
 const app = express();
 const { SerialPort } = require('serialport');
