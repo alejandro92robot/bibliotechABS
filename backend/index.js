@@ -2,16 +2,18 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
-const arduinoRoutes = require('./routes/arduinoRoutes');
+//const arduinoRoutes = require('./routes/arduinoRoutes');
+const libroRoutes = require('./routes/libroRoutes');
 
 app.use(cors());
-app.use('/', arduinoRoutes);
+//app.use('/', arduinoRoutes);
+app.use('/', libroRoutes);
 
 const DataBase = 'bibliotech';
 // Conexión a la base de datos MongoDB
 mongoose.connect(`mongodb://127.0.0.1:27017/${DataBase}`)
     .then(() => {
-        console.log('Conexión a la base de datos establecida');
+        console.log('Connected to the database');
     })
     .catch((error) => {
         console.error('Error de conexión a la base de datos:', error);

@@ -1,36 +1,39 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const { arduinoSerialPort, datosRecibidos } = require('../controllers/arduinoController');
-
-// Define el esquema para la colección datosArduino
-const datosArduinoSchema = new mongoose.Schema({
-    data: [Object] // Define que la clave "data" es un arreglo de objetos
-});
-
-// Crea el modelo basado en el esquema
-const DatosArduino = mongoose.model('datosArduino', datosArduinoSchema);
-
+const DatosArduino = require('../models/DatosArduino');
 
 router.get('/', function (req, res) {
     return res.send('Working');
 });
 
 router.get('/data', async function (req, res) {
-    
-    //res.json({ data: datosRecibidos });
+    //console.log(datosRecibidos)
+    res.json({ data: datosRecibidos });
+});
+
+router.get('/save-data', async function (req, res) {
     try {
-        const nuevoRegistro = new DatosArduino({ data: datosRecibidos });
-        console.log(datosRecibidos)
-        // Guarda el documento en la base de datos
-        await nuevoRegistro.save();
+        // Convierte el array de datos en un solo string y busca la temperatura y humedad dentro de él
+        const dataString = datosRecibidos.join(' ');
+        const regex = /T = (\d+\.\d+) deg\. C, H = (\d+\.\d+)%/g;
+        let match;
+        const datos = [];
+        while ((match = regex.exec(dataString)) !== null) {
+            const temperatura = match[1];
+            const humedad = match[2];
+            const fechaHora = new Date(); // Obtiene la fecha y hora actual
+            datos.push({ temperatura, humedad, fechaHora });
+        }
 
-        // Envía una respuesta al cliente
-        res.json({ message: 'Datos guardados correctamente en la colección datosArduino', data: datosRecibidos });
+        // Guarda cada conjunto de datos en la base de datos
+        console.log(datos)
+        await DatosArduino.insertMany(datos);
 
-    } catch (err) {
-        console.error('Error al guardar los datos en la base de datos:', err);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(201).json({ message: 'Datos guardados correctamente' });
+    } catch (error) {
+        console.error('Error al guardar los datos:', error);
+        res.status(500).send('Error interno del servidor');
     }
 });
 
