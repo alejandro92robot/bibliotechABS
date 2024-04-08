@@ -4,10 +4,14 @@ const app = express();
 const mongoose = require('mongoose');
 //const arduinoRoutes = require('./routes/arduinoRoutes');
 const libroRoutes = require('./routes/libroRoutes');
+const alumnoRoutes = require('./routes/alumnoRoutes');
 
+
+app.use(express.json());
 app.use(cors());
 //app.use('/', arduinoRoutes);
 app.use('/', libroRoutes);
+app.use('/', alumnoRoutes);
 
 const DataBase = 'bibliotech';
 // Conexión a la base de datos MongoDB

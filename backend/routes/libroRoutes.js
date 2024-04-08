@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const generarYGuardarQRLibro = require('../utilities/qrGenerator');
+const { generarYGuardarQRLibro } = require('../utilities/qrGenerator');
 const Libro = require('../models/Libro');
 
 router.post('/generar-qr-libro', async (req, res) => {
     //const { titulo, autor } = req.body;
-    const titulo = 'Fundación';
-    const autor = 'Issac Asimov';
+    const titulo = 'Tao the King';
+    const autor = 'Lao Tse';
     if (!titulo || !autor) {
         return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
@@ -20,7 +20,7 @@ router.post('/generar-qr-libro', async (req, res) => {
     }
 });
 
-router.get('/mostrar-codigo-qr/:nombreLibro', async (req, res) => {
+router.get('/mostrar-qr-libro/:nombreLibro', async (req, res) => {
     try {
         const nombreLibro = req.params.nombreLibro;
 
