@@ -7,6 +7,7 @@ const libroSchema = new mongoose.Schema({
   editorial: String,
   clasificacion: String,
   subclasificacion: String,
+  stock: Number,
   comando: String,
   codigoQR: String  // Aquí almacenaremos la URL o la imagen del código QR
 });

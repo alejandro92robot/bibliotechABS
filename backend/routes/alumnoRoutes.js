@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { generarYGuardarQRAlumno } = require('../utilities/qrGenerator');
 const Alumno = require('../models/Alumno');
+const Libro = require('../models/Libro');
+const Prestamo = require('../models/Prestamo');
 
 router.post('/generar-qr-alumno', async (req, res) => {
     const { nombre, apellido, rut, curso, email } = req.body;
@@ -55,25 +57,29 @@ router.get('/mostrar-qr-alumno/:nombreAlumno', async (req, res) => {
 });
 
 // Endpoint para sacar un libro en préstamo
-router.post('/sacar-libro', async (req, res) => {
-    const { alumnoId, libroId } = req.body;
+router.get('/sacar-libro', async (req, res) => {
+    const rut = '18385160-8';
+    const titulo = 'Tao the King';
 
     try {
-        // Verificar si el alumno y el libro existen en la base de datos
-        const alumno = await Alumno.findById(alumnoId);
-        const libro = await Libro.findById(libroId);
-
+        // Buscar el alumno por su rut
+        const alumno = await Alumno.findOne({ rut: rut });
         if (!alumno) {
-            return res.status(404).json({ error: 'Alumno no encontrado' });
+            console.log('No se encontró ningún alumno con ese rut.');
+            return res.status(404).json({ message: 'No se encontró ningún alumno con ese rut.' });
         }
 
+        // Buscar el libro por su título
+        const libro = await Libro.findOne({ titulo: titulo });
         if (!libro) {
-            return res.status(404).json({ error: 'Libro no encontrado' });
+            console.log('No se encontró ningún libro con ese título.');
+            return res.status(404).json({ message: 'No se encontró ningún libro con ese título.' });
         }
 
         // Crear un nuevo préstamo
         const nuevoPrestamo = new Prestamo({
-            libro: libroId,
+            titulo: libro._id,
+            alumno: alumno._id,
             fechaInicio: new Date(),
             fechaTermino: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // Fecha de término: 7 días después de la fecha de inicio
         });
@@ -87,10 +93,31 @@ router.post('/sacar-libro', async (req, res) => {
 
         res.status(201).json({ message: 'Libro prestado exitosamente' });
     } catch (error) {
-        console.error('Error al sacar el libro en préstamo:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error al procesar la solicitud:', error);
+        res.status(500).json({ message: 'Error al procesar la solicitud' });
     }
 });
 
+//Endopoint para mostrar todos los prestamos por rut
+router.get('/prestamos/:rut', async (req, res) => {
+    const rut = req.params.rut;
+
+    try {
+        // Obtener todos los préstamos filtrados por el rut del alumno
+        const prestamos = await Prestamo.find({}).populate({
+            path: 'alumno',
+            match: { rut: rut },
+            select: 'nombre rut'
+        }).populate('titulo', 'titulo');
+
+        // Filtrar los préstamos para eliminar aquellos que no tengan un alumno correspondiente al rut proporcionado
+        const prestamosFiltrados = prestamos.filter(prestamo => prestamo.alumno !== null);
+
+        res.status(200).json(prestamosFiltrados);
+    } catch (error) {
+        console.error('Error al obtener los préstamos:', error);
+        res.status(500).json({ message: 'Error al obtener los préstamos' });
+    }
+});
 
 module.exports = router;
