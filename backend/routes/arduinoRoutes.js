@@ -40,12 +40,12 @@ router.get('/save-data', async function (req, res) {
 router.get('/:action', function (req, res) {
     const action = req.params.action || req('action');
 
-    if (action === 'led') {
-        arduinoSerialPort.write("w");
+    if (action === 'A001') {
+        arduinoSerialPort.write('A001\n');
         return res.send('Led light is on!');
     }
-    if (action === 'off') {
-        arduinoSerialPort.write("t");
+    if (action === 'A000') {
+        arduinoSerialPort.write('A000\n');
         return res.send("Led light is off!");
     }
 

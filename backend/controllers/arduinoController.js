@@ -2,7 +2,7 @@
 const { SerialPort } = require('serialport');
 const { ReadlineParser } = require('@serialport/parser-readline');
 // Definir el puerto COM para el Arduino
-const arduinoCOMPort = "COM7";
+const arduinoCOMPort = "COM9";
 
 // Crear un arreglo para almacenar los datos recibidos del Arduino
 let datosRecibidos = [];

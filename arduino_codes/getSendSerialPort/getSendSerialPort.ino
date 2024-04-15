@@ -44,11 +44,11 @@ static bool measure_environment(float *temperature, float *humidity) {
  * Main program loop.
  */
 void loop() {
-  float temperature;
+  /*float temperature;
   float humidity;
 
   /* Measure temperature and humidity.  If the functions returns
-       true, then a measurement is available. */
+       true, then a measurement is available. 
   if (measure_environment(&temperature, &humidity)) {
     Serial.print("T = ");
     Serial.print(temperature, 1);
@@ -56,7 +56,7 @@ void loop() {
     Serial.print(humidity, 1);
     Serial.println("%");
   }
-
+*/
   if (Serial.available() > 0)  // Read from serial port
   {
     char ReaderFromNode;  // Store current character

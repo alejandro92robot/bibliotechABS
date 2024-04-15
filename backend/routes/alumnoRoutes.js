@@ -59,7 +59,7 @@ router.get('/mostrar-qr-alumno/:nombreAlumno', async (req, res) => {
 // Endpoint para sacar un libro en préstamo
 router.get('/sacar-libro', async (req, res) => {
     const rut = '18385160-8';
-    const titulo = 'Tao the King';
+    const titulo = 'Geometria';
 
     try {
         // Buscar el alumno por su rut
