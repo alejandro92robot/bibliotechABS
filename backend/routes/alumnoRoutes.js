@@ -5,15 +5,29 @@ const Alumno = require('../models/Alumno');
 const Libro = require('../models/Libro');
 const Prestamo = require('../models/Prestamo');
 
+// Función para generar una secretKey aleatoria
+function generarSecretKey(longitud) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let secretKey = '';
+    for (let i = 0; i < longitud; i++) {
+        const indiceAleatorio = Math.floor(Math.random() * caracteres.length);
+        secretKey += caracteres.charAt(indiceAleatorio);
+    }
+    return secretKey;
+}
+
 router.post('/generar-qr-alumno', async (req, res) => {
     const { nombre, apellido, rut, curso, email } = req.body;
+    const secretKeyLong = 16; // Longitud deseada para la secretKey
+    const secretKey = generarSecretKey(secretKeyLong);
+    console.log('SecretKey generada:', secretKey);
 
     if (!nombre || !apellido || !rut || !curso || !email) {
         return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
 
     try {
-        await generarYGuardarQRAlumno(nombre, apellido, rut, curso, email);
+        await generarYGuardarQRAlumno(nombre, apellido, rut, email, curso, secretKey);
         return res.status(201).json({ message: 'Código QR generado y guardado correctamente' });
     } catch (error) {
         console.error('Error al generar y guardar el código QR:', error);
@@ -58,8 +72,8 @@ router.get('/mostrar-qr-alumno/:nombreAlumno', async (req, res) => {
 
 // Endpoint para sacar un libro en préstamo
 router.get('/sacar-libro', async (req, res) => {
-    const rut = '18385160-8';
-    const titulo = 'Geometria';
+    const rut = '1834857-9';
+    const titulo = 'Fundación';
 
     try {
         // Buscar el alumno por su rut

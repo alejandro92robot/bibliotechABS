@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const mongoose = require('mongoose');
-const arduinoRoutes = require('./routes/arduinoRoutes');
+//const arduinoRoutes = require('./routes/arduinoRoutes');
 const libroRoutes = require('./routes/libroRoutes');
 const alumnoRoutes = require('./routes/alumnoRoutes');
 const adminRoures = require('./routes/adminRoutes');
@@ -13,7 +13,7 @@ app.use(cors());
 app.use('/', libroRoutes);
 app.use('/', alumnoRoutes);
 app.use('/', adminRoures);
-app.use('/', arduinoRoutes);
+//app.use('/', arduinoRoutes);
 
 const DataBase = 'bibliotech';
 // Conexión a la base de datos MongoDB

@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { generarYGuardarQRLibro } = require('../utilities/qrGenerator');
 const Libro = require('../models/Libro');
+const multer = require('multer');
+
+const storage = multer.memoryStorage(); // Almacena los archivos en memoria
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // Limita el tamaño del archivo a 5 MB
+    }
+});
 
 const filas = 4;
 const columnas = 4;
@@ -15,8 +25,20 @@ for (let i = 0; i < filas; i++) {
     }
 }
 
+const diccionario = {};
+
+for (let i = 0; i < filas; i++) {
+    for (let j = 0; j < columnas; j++) {
+        const comando = comandos[i][j];
+        const subclasificacion = `Subclase_${i}_${j}`; // Aquí debes reemplazar con el valor deseado
+
+        diccionario[comando] = subclasificacion;
+    }
+}
+
 router.get('/mostrar-comandos', async (req, res) => {
     console.log(comandos);
+    console.log(diccionario);
     return res.status(201).json({ message: 'Comandos mostrados correctamente' });
 })
 
@@ -52,20 +74,16 @@ router.get('/libros', async (req, res) => {
 });
 
 
-router.post('/generar-qr-libro', async (req, res) => {
-    const { titulo, autor, editorial, clasificacion, subclasificacion, stock } = req.body;
-    /* const titulo = 'Fundación';
-    const autor = 'Isaac Asimov';
-    const editorial = 'Santillana';
-    const clasificacion = 'Ciencia';
-    const subclasificacion = 'Ciencia Ficción'; */
+router.post('/generar-qr-libro', upload.single('imagen'), async (req, res) => {
+    const { titulo, autor, editorial, descripcion, clasificacion, subclasificacion, stock } = req.body;
+    const imagen = req.file.buffer;
     const comando = 'A001';
     if (!titulo || !autor) {
         return res.status(400).json({ error: 'Faltan datos requeridos' });
     }
 
     try {
-        await generarYGuardarQRLibro(titulo, autor, editorial, clasificacion, subclasificacion, stock, comando);
+        await generarYGuardarQRLibro(titulo, autor, editorial, descripcion, clasificacion, subclasificacion, stock, comando, imagen);
         return res.status(201).json({ message: 'Código QR generado y guardado correctamente' });
     } catch (error) {
         console.error('Error al generar y guardar el código QR:', error);
@@ -74,7 +92,7 @@ router.post('/generar-qr-libro', async (req, res) => {
 });
 
 // Endpoint para disminuir en uno el valor de currentStock cuando se saque un libro específico
-router.put('/sacar/:idLibro', async (req, res) => {
+router.put('/obtener/:idLibro', async (req, res) => {
     try {
         const libro = await Libro.findById(req.params.idLibro);
 

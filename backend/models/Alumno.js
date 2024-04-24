@@ -7,6 +7,7 @@ const alumnoSchema = new mongoose.Schema({
   rut: String,
   email: String,
   curso: String,
+  secretKey: String,
   codigoQR: String,  // Aquí almacenaremos la URL o la imagen del código QR del alumno
   prestamos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Prestamo' }] // Referencia a los préstamos asociados al alumno
 });
