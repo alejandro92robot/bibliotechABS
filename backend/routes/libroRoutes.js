@@ -63,6 +63,26 @@ router.get('/mostrar-qr-libro/:nombreLibro', async (req, res) => {
     }
 });
 
+// Endpoint para buscar un libro por su ID
+router.get('/libros/:id', async (req, res) => {
+    const libroId = req.params.id;
+
+    try {
+        // Buscar el libro en la base de datos por su ID
+        const libro = await Libro.findById(libroId);
+
+        if (!libro) {
+            return res.status(404).json({ error: 'Libro no encontrado' });
+        }
+
+        // Si se encuentra el libro, devolverlo como respuesta
+        return res.status(200).json(libro);
+    } catch (error) {
+        console.error('Error al buscar el libro por ID:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 router.get('/libros', async (req, res) => {
     try {
         const libros = await Libro.find({}); // Utiliza await para esperar la respuesta de la consulta

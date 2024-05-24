@@ -45,8 +45,14 @@ const generarYGuardarQRAlumno = async (nombre, apellido, rut, email, curso, secr
       email: email,
       curso: curso,
       secretKey: secretKey,
-      codigoQR: codigoQR
+      codigoQR: codigoQR,
+      prestamos: [], // Inicializa como un arreglo vacío
+      rangos: [], // Inicializa como un arreglo vacío
+      recompensas: [], // Inicializa como un arreglo vacío
+      logros: [], // Inicializa como un arreglo vacío
+      puntosExperiencia: 0 // Inicializa con 0 puntos de experiencia
     });
+    
     await nuevoAlumno.save();
 
     //console.log('Código QR generado y guardado en la base de datos:', codigoQR);
